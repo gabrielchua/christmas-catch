@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Christmas Catch Game - 4× Larger</title>
+  <title>Christmas Catch</title>
   <style>
     /* Basic page styling */
     html, body {
@@ -34,7 +34,7 @@
 
     /* Santa */
     #player {
-      bottom: 0; /* We'll place him at the bottom edge */
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
       transition: transform 0.1s linear;
@@ -43,24 +43,25 @@
     /* Elves */
     .elf {
       position: absolute;
-      font-size: 10em; /* same as normal .item */
+      font-size: 10em; 
       user-select: none;
       pointer-events: none;
       display: none;
     }
 
-    /* Big obstacles get bigger font – 14em (was 3.5em × 4) */
+    /* Big obstacles get bigger font – 14em */
     .bigObstacle {
       font-size: 14em;
     }
 
-    /* Score & Lives HUD */
+    /* 2× Larger Text for Score & Lives HUD */
     #scoreBoard, #livesBoard {
       position: absolute;
       top: 0;
-      padding: 8px 16px;
-      font-size: 1em;
+      padding: 24px 40px;   /* doubled from (12px 20px) */
+      font-size: 2.6rem;    /* doubled from 1.3rem */
       background: rgba(255,255,255,0.7);
+      z-index: 999;
     }
     #scoreBoard {
       left: 0;
@@ -71,7 +72,7 @@
       border-bottom-left-radius: 10px;
     }
 
-    /* Game Over Screen */
+    /* 2× Larger Text for Game Over */
     #gameOverScreen {
       position: absolute;
       top: 0; 
@@ -83,15 +84,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 2em;
+      font-size: 5rem; /* doubled from 2.5rem */
       color: #c00;
-      z-index: 999;
+      z-index: 9999;
       display: none; /* hidden by default */
     }
     #gameOverScreen button {
       margin-top: 20px;
-      font-size: 1em;
-      padding: 10px 20px;
+      font-size: 3rem;     /* doubled from 1.5rem */
+      padding: 28px 48px;  /* bigger padding to match */
       background-color: #5cb85c;
       color: #fff;
       border: none;
@@ -102,46 +103,46 @@
       background-color: #72e572;
     }
 
-    /* Updated styling for the Instructions Panel */
+    /* Instructions Panel - 2× bigger text */
     #instructions {
       position: absolute;
       top: 50%; 
       left: 50%;
       transform: translate(-50%, -50%);
       width: 90%;
-      max-width: 400px;
+      max-width: 450px;
       background: #ffffff;
       border-radius: 15px;
-      padding: 20px 25px;
+      padding: 50px 60px;   /* doubled from 25px 30px */
       text-align: center;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-      font-size: 1rem;
+      font-size: 2.4rem; /* doubled from 1.2rem */
       color: #333;
       z-index: 9;
     }
 
     #instructions h2 {
       margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 1.5rem;
+      margin-bottom: 30px;   /* doubled from 15px */
+      font-size: 4rem;       /* doubled from 2rem */
       color: #333;
     }
 
     #instructions p {
-      font-size: 0.9rem;
+      font-size: 2rem;       /* doubled from 1rem */
       color: #555;
-      margin-top: 15px;
+      margin-top: 30px;      /* doubled from 15px */
     }
 
     #instructions ul {
-      margin: 15px 0;
+      margin: 30px 0;        /* doubled from 15px */
       padding: 0;
       list-style: none;
     }
 
     #instructions ul li {
-      font-size: 1.1rem;
-      margin-bottom: 10px;
+      font-size: 2.4rem;     /* doubled from 1.2rem */
+      margin-bottom: 20px;   /* doubled from 10px */
       line-height: 1.5;
     }
 
@@ -150,9 +151,9 @@
     }
 
     #startButton {
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 1.2rem;
+      margin-top: 40px;      /* doubled from 20px */
+      padding: 28px 48px;    /* doubled from 14px 24px */
+      font-size: 2.8rem;     /* doubled from 1.4rem */
       font-weight: bold;
       color: #fff;
       background: #ff4545;
@@ -163,7 +164,7 @@
     }
     #startButton:hover {
       background: #ff6666;
-      transform: translateY(-2px);
+      transform: translateY(-4px); /* doubled from -2px */
     }
   </style>
 </head>
@@ -212,14 +213,12 @@
     const gameOverMessage = document.getElementById("gameOverMessage");
     const retryButton = document.getElementById("retryButton");
 
-    // Arrays to keep track of elves on each side
     let leftElves = [];
     let rightElves = [];
     const maxElvesPerSide = 3;
 
-    // Game state
     let isGameRunning = false;
-    let playerX = 50; // in percentage
+    let playerX = 50; 
     let score = 0;
     let lives = 3;
 
@@ -228,8 +227,8 @@
     let speedInterval;
 
     // Speed scaling
-    let gameSpeed = 1;   // how fast items fall
-    let musicRate = 1;   // how fast jingle bells is played
+    let gameSpeed = 1;  
+    let musicRate = 1;  
 
     const MIN_X = 0;
     const MAX_X = 100;
@@ -239,7 +238,7 @@
        ------------------------ */
     let audioCtx = null;
 
-    // Simplified full chorus of "Jingle Bells" (public domain).
+    // Full chorus of "Jingle Bells" (public domain).
     const jingleBellsFull = [
       // CHORUS, Part 1
       [330, 0.3], [330, 0.3], [330, 0.3],
@@ -272,7 +271,7 @@
       let timeCursor = now;
 
       jingleBellsFull.forEach(([freq, baseDur]) => {
-        const scaledDur = baseDur / musicRate; // speed up if musicRate>1
+        const scaledDur = baseDur / musicRate; 
         let osc = audioCtx.createOscillator();
         let gain = audioCtx.createGain();
         osc.frequency.value = freq;
@@ -297,6 +296,57 @@
           playJingle();
         }
       }, totalTime * 1000);
+    }
+
+    /*
+      SHORT SOUND EFFECTS on collisions:
+    */
+    function playCollisionSound(type) {
+      if (!audioCtx) return;
+      
+      let freq, dur;
+      switch(type) {
+        case "present":       // 🎁
+          freq = 880;
+          dur  = 0.2;
+          break;
+        case "cookie":       
+        case "milk":         
+          freq = 523.25;    
+          dur  = 0.25;
+          break;
+        case "obstacle":    
+          freq = 220;      
+          dur  = 0.25;
+          break;
+        case "bigObstacle":
+          freq = 110;       
+          dur  = 0.3;
+          break;
+        case "elfPower":
+          freq = 659.25;    
+          dur  = 0.3;
+          break;
+        default:
+          freq = 440;       
+          dur  = 0.2;
+      }
+
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      let now = audioCtx.currentTime;
+      osc.start(now);
+      osc.stop(now + dur);
+
+      // quick fade in/out
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.6, now + dur/5);
+      gain.gain.setValueAtTime(0.6, now + dur - dur/5);
+      gain.gain.linearRampToValueAtTime(0, now + dur);
     }
 
     /* ------------------------
@@ -341,7 +391,7 @@
       // Spawn items
       spawnInterval = setInterval(spawnItem, 1000);
 
-      // Speed up every 5 seconds
+      // Speed up every 5 seconds (exponential style)
       speedInterval = setInterval(() => {
         gameSpeed *= 1.2;
         musicRate *= 1.2;
@@ -420,12 +470,11 @@
       item.classList.add("item", "falling");
       item.dataset.type = type;
 
-      // Because icons are bigger, let's use a base speed 3-6
+      // Because emojis are bigger, let's use a base speed ~3-6
       const baseSpeed = 3 + Math.random() * 3; 
       item.dataset.speed = baseSpeed.toFixed(2);
 
-      // Y start, multiplied ~4× from the original ~60px -> ~240 px
-      // and ~70px -> ~280 px
+      // Y start (4× from old ~60 -> ~240; ~70->~280)
       let topOffset = "-240px"; 
       if (type === "bigObstacle") {
         topOffset = "-280px";
@@ -433,8 +482,7 @@
       }
       item.style.top = topOffset;
 
-      // random X position [0..(areaWidth- (60*4))]
-      // but let's keep it simple: areaWidth - 240
+      // random X in [0.. areaWidth-240]
       let randomXPercent = Math.random() * 100;
       if (randomXPercent < MIN_X) randomXPercent = MIN_X;
       if (randomXPercent > MAX_X) randomXPercent = MAX_X;
@@ -464,6 +512,9 @@
        ------------------------ */
     function handleCollision(item) {
       const type = item.dataset.type;
+      // play a beep for this item
+      playCollisionSound(type);
+
       if (type === "present") {
         score++;
         scoreDisplay.textContent = score;
@@ -528,11 +579,10 @@
       const santaRect = player.getBoundingClientRect();
       const gameRect = gameArea.getBoundingClientRect();
 
-      // left side
+      // left side offsets (4× bigger)
       leftElves.forEach((elfDiv, i) => {
-        // The horizontal offset is also bigger now
-        const offsetX = -7.2 - i * 7.2; // previously -1.8, now 4×
-        const offsetPx = offsetX * 16;
+        const offsetX = -7.2 - i * 7.2; 
+        const offsetPx = offsetX * 16; 
         elfDiv.style.display = "block";
         elfDiv.style.left = (santaRect.left - gameRect.left + offsetPx) + "px";
         elfDiv.style.top  = (santaRect.top - gameRect.top) + "px";
