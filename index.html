@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Christmas Catch Game - Modern Instructions</title>
+  <title>Christmas Catch Game - 4× Larger</title>
   <style>
     /* Basic page styling */
     html, body {
@@ -24,17 +24,17 @@
       overflow: hidden;
     }
 
-    /* Items (player, obstacles, etc.) */
+    /* Items (player, obstacles, etc.) - 4x bigger now */
     .item {
       position: absolute;
-      font-size: 2.5em;
+      font-size: 10em; /* 2.5em × 4 = 10em */
       user-select: none;
       pointer-events: none;
     }
 
     /* Santa */
     #player {
-      bottom: 20px;
+      bottom: 0; /* We'll place him at the bottom edge */
       left: 50%;
       transform: translateX(-50%);
       transition: transform 0.1s linear;
@@ -43,15 +43,15 @@
     /* Elves */
     .elf {
       position: absolute;
-      font-size: 2.5em;
+      font-size: 10em; /* same as normal .item */
       user-select: none;
       pointer-events: none;
       display: none;
     }
 
-    /* Big obstacles get bigger font */
+    /* Big obstacles get bigger font – 14em (was 3.5em × 4) */
     .bigObstacle {
-      font-size: 3.5em;
+      font-size: 14em;
     }
 
     /* Score & Lives HUD */
@@ -183,8 +183,8 @@
       <ul>
         <li><span>🎁</span> = +1 point</li>
         <li><span>🍪 / 🥛</span> = +1 life</li>
-        <li><span>⛄️</span> = obstacle (normal), -1 life</li>
-        <li><span>☃️</span> = big obstacle, -2 lives</li>
+        <li><span>⛄️</span> = normal obstacle (-1 life)</li>
+        <li><span>☃️</span> = big obstacle (-2 lives)</li>
         <li><span>🎄</span> = summons 1 elf on your left & right (up to 3 each side!)</li>
       </ul>
       <p>The game <strong>and</strong> the music both get exponentially faster over time!</p>
@@ -239,10 +239,7 @@
        ------------------------ */
     let audioCtx = null;
 
-    /*
-      Simplified full chorus of "Jingle Bells" (public domain).
-      Frequencies approximate: E4=330, F4=349, G4=392, A4=440, B4=494, C5=523, D5=587, E5=659
-    */
+    // Simplified full chorus of "Jingle Bells" (public domain).
     const jingleBellsFull = [
       // CHORUS, Part 1
       [330, 0.3], [330, 0.3], [330, 0.3],
@@ -344,10 +341,10 @@
       // Spawn items
       spawnInterval = setInterval(spawnItem, 1000);
 
-      // Speed up every 5 seconds (EXPO style: multiply by 1.2)
+      // Speed up every 5 seconds
       speedInterval = setInterval(() => {
-        gameSpeed *= 1.2;   // items fall faster
-        musicRate *= 1.2;   // music plays faster
+        gameSpeed *= 1.2;
+        musicRate *= 1.2;
       }, 5000);
     }
 
@@ -423,25 +420,26 @@
       item.classList.add("item", "falling");
       item.dataset.type = type;
 
-      // Because icons are bigger, let's use a base speed of 3-6
+      // Because icons are bigger, let's use a base speed 3-6
       const baseSpeed = 3 + Math.random() * 3; 
       item.dataset.speed = baseSpeed.toFixed(2);
 
-      // Y start
-      let topOffset = "-60px"; 
+      // Y start, multiplied ~4× from the original ~60px -> ~240 px
+      // and ~70px -> ~280 px
+      let topOffset = "-240px"; 
       if (type === "bigObstacle") {
-        // bigger obstacles might start even higher
-        topOffset = "-70px";
+        topOffset = "-280px";
         item.classList.add("bigObstacle");
       }
       item.style.top = topOffset;
 
-      // random X position
+      // random X position [0..(areaWidth- (60*4))]
+      // but let's keep it simple: areaWidth - 240
       let randomXPercent = Math.random() * 100;
       if (randomXPercent < MIN_X) randomXPercent = MIN_X;
       if (randomXPercent > MAX_X) randomXPercent = MAX_X;
       const areaWidth = gameArea.clientWidth;
-      item.style.left = ((randomXPercent/100)*(areaWidth - 60)) + "px";
+      item.style.left = ((randomXPercent/100)*(areaWidth - 240)) + "px";
 
       // Set icon
       if (type === "present") {
@@ -532,8 +530,9 @@
 
       // left side
       leftElves.forEach((elfDiv, i) => {
-        const offsetX = -1.8 - i * 1.8; // in em
-        const offsetPx = offsetX * 16; // ~1em=16px
+        // The horizontal offset is also bigger now
+        const offsetX = -7.2 - i * 7.2; // previously -1.8, now 4×
+        const offsetPx = offsetX * 16;
         elfDiv.style.display = "block";
         elfDiv.style.left = (santaRect.left - gameRect.left + offsetPx) + "px";
         elfDiv.style.top  = (santaRect.top - gameRect.top) + "px";
@@ -541,7 +540,7 @@
 
       // right side
       rightElves.forEach((elfDiv, i) => {
-        const offsetX = 1.8 + i * 1.8;
+        const offsetX = 7.2 + i * 7.2;
         const offsetPx = offsetX * 16;
         elfDiv.style.display = "block";
         elfDiv.style.left = (santaRect.right - gameRect.left + offsetPx - elfDiv.offsetWidth) + "px";
@@ -594,7 +593,7 @@
       const playerWidth = player.offsetWidth;
       const newLeft = (playerX/100) * (areaWidth - playerWidth);
       player.style.left = newLeft + "px";
-      positionElves(); // also reposition elves
+      positionElves();
     }
 
     /* ------------------------
